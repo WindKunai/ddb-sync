@@ -32,7 +32,7 @@
   ],
   "packs": [],
   "socket": false,
-  "url": "https://github.com/YOURUSER/ddb-sync",
-  "manifest": "https://raw.githubusercontent.com/YOURUSER/ddb-sync/main/module.json",
-  "download": "https://github.com/YOURUSER/ddb-sync/releases/latest/download/ddb-sync.zip"
+  "url": "https://github.com/WindKunai/ddb-sync",
+  "manifest": "https://raw.githubusercontent.com/WindKunai/ddb-sync/main/module.json",
+  "download": "https://github.com/WindKunai/ddb-sync/archive/refs/heads/main.zip"
 }

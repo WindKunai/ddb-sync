@@ -3,11 +3,11 @@ export const MODULE_ID = "ddb-sync";
 export function registerSettings() {
   game.settings.register(MODULE_ID, "proxyUrl", {
     name: "Proxy URL",
-    hint: "Base URL of your self-hosted ddb-proxy instance, e.g. https://ddb.example.com",
+    hint: "Base URL of your self-hosted ddb-proxy instance, e.g. https://ddb.mathiels.uk",
     scope: "world",
     config: true,
     type: String,
-    default: ""
+    default: "https://ddb.mathiels.uk"
   });
 
   game.settings.register(MODULE_ID, "cobaltToken", {
