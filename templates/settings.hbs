@@ -1,0 +1,28 @@
+<div class="ddb-sync-panel">
+  <p>
+    Enter a D&D Beyond character ID (the number in the character sheet URL,
+    e.g. <code>dndbeyond.com/characters/12345678</code>).
+  </p>
+
+  <div class="form-group">
+    <label for="characterId">Character ID</label>
+    <input type="text" name="characterId" value="{{characterId}}" placeholder="12345678" />
+  </div>
+
+  <div class="form-group ddb-sync-actions">
+    <button type="button" data-action="testConnection">
+      <i class="fa-solid fa-plug"></i> Test Connection
+    </button>
+    <button type="button" data-action="import">
+      <i class="fa-solid fa-download"></i> Import Character
+    </button>
+    <button type="button" data-action="sync">
+      <i class="fa-solid fa-arrows-rotate"></i> Sync Character
+    </button>
+  </div>
+
+  <p class="hint">
+    Import creates a new actor. Sync updates the actor already linked to
+    this character ID (see module settings for proxy URL / session cookie).
+  </p>
+</div>
