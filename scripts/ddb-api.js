@@ -3,15 +3,17 @@ import { getProxyUrl, getCobaltToken } from "./settings.js";
 /**
  * Thin wrapper around a self-hosted ddb-proxy instance.
  *
- * NOTE: ddb-proxy's exact route names/payload shape can change between
- * versions of that project. Check the README / source of whatever
- * ddb-proxy version you deploy and adjust ROUTES / the request body
- * below to match. This file intentionally isolates all of that so the
- * rest of the module never has to know about it.
+ * Route and payload shape confirmed against ddb-importer's own
+ * DDBCharacter.getCharacterData() (MIT licensed): it POSTs to
+ * `${proxyUrl}/proxy/v5/character` and gets back
+ * `{ success, ddb: { character: {...} } }`, not a bare character object.
+ * If your self-hosted ddb-proxy version predates the v5 endpoint this
+ * will 404 - check its README/CHANGELOG for the route it actually
+ * exposes and adjust ROUTES.character below.
  */
 const ROUTES = {
   ping: "/ping",
-  character: "/proxy/character"
+  character: "/proxy/v5/character"
 };
 
 async function proxyPost(path, body) {
@@ -42,15 +44,35 @@ export async function testConnection() {
 /**
  * Fetch a raw D&D Beyond character JSON blob for the given character id.
  * @param {string|number} characterId
- * @returns {Promise<object>} raw DDB character data
+ * @returns {Promise<object>} raw DDB character data (the `ddb.character`
+ *   object - already unwrapped, so callers get name/stats/etc at top level)
  */
 export async function fetchCharacter(characterId) {
   const cobalt = getCobaltToken();
-  const data = await proxyPost(ROUTES.character, {
+  const response = await proxyPost(ROUTES.character, {
     cobalt,
-    characterId: String(characterId)
+    characterId: String(characterId),
+    // Fields ddb-importer sends alongside cobalt/characterId. Most are
+    // optional/no-ops for a self-hosted proxy without those features, but
+    // included so the request shape matches what the proxy expects.
+    campaignId: null,
+    filterModifiers: false,
+    splitSpells: true,
+    devMode: false,
+    updateId: null
   });
-  // Depending on the proxy version this may be wrapped, e.g. { success, data }.
-  if (data && typeof data === "object" && "data" in data) return data.data;
-  return data;
+
+  if (!response || typeof response !== "object") {
+    throw new Error("ddb-sync: proxy returned an unexpected (non-JSON-object) response.");
+  }
+  if (response.success === false) {
+    throw new Error(`ddb-sync: proxy reported failure${response.message ? `: ${response.message}` : "."}`);
+  }
+  const character = response.ddb?.character;
+  if (!character) {
+    throw new Error(
+      "ddb-sync: response did not contain ddb.character - check your ddb-proxy version's actual response shape."
+    );
+  }
+  return character;
 }

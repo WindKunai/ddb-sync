@@ -2,7 +2,7 @@
   "id": "ddb-sync",
   "title": "D&D Beyond Sync (self-hosted)",
   "description": "Import and sync D&D Beyond characters into Foundry VTT dnd5e actors via a self-hosted ddb-proxy instance.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "authors": [
     {
